@@ -381,16 +381,16 @@ makeRequestHeader login password cnonce req (Digest dc) = do
                 case qop dc of
                   Nothing -> mzero
                   Just _ -> return $ "cnonce=\"" ++ cnonce ++ "\"",
-                case opaque dc of
-                  Nothing -> mzero
-                  Just o -> return $ "opaque=\"" ++ o ++ "\"",
                 case qop dc of
                   Nothing -> mzero
                   Just Auth -> return "qop=\"auth\""
                   Just AuthInt -> return "qop=\"auth-int\"",
                 case qop dc of
                   Nothing -> mzero
-                  Just _ -> return "nc=00000001"
+                  Just _ -> return "nc=00000001",
+                case opaque dc of
+                  Nothing -> mzero
+                  Just o -> return $ "opaque=\"" ++ o ++ "\""
                ]
            requestDigest =
                case qop dc of
