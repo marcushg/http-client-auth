@@ -40,6 +40,7 @@ library
                    , resourcet        >= 1.1
                    , transformers     >= 0.2
                    , utf8-string      >= 0.3
+                   , random           >= 1.1
 
 
 

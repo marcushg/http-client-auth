@@ -57,6 +57,7 @@ import           Data.List                    (intersperse, isPrefixOf)
 import           Data.Maybe                   (catMaybes)
 import           Data.Monoid                  (Monoid (mappend, mconcat, mempty))
 import           Network.HTTP.Conduit
+import           System.Random
 
 
 
@@ -441,6 +442,11 @@ makeRequestBodyHash req =
       bldrSink = CL.concatMap (L.toChunks . toLazyByteString) =$ hashSink
       hashSink = fmap (show :: MD5Digest -> String) sinkHash
 
+randomCnonce :: IO String
+randomCnonce = do
+  newGen <- newStdGen
+  return $ B64.encode $ take 20 $ randomRs ('A', 'z') newGen
+
 -- | This is the main function. It sends a request, gets the response, and,
 --
 -- if this response requires authorization, it sends the same request again,
@@ -457,10 +463,11 @@ requestWithAuth login password query req = do
     resp <- lift $ query safeReq
     Just challenge <- return $ getChallenge resp
     let repeatReq = do
+            cnonce <- liftIO $ randomCnonce
             let makeHeader = makeRequestHeader
                                            login
                                            password
-                                           "cnonce" -- TODO set correctly
+                                           cnonce
                                            req
                                            challenge
 
