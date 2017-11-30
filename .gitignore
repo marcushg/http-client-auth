@@ -4,6 +4,7 @@
 .cabal-sandbox/
 cabal.sandbox.config
 dist/
+.stack-work/
 codex.tags
 *.swo
 TAGS
