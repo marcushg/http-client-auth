@@ -459,8 +459,7 @@ requestWithAuth
   -> Request -- ^ request to send (without authorization)
   -> MaybeT IO (Response body)
 requestWithAuth login password query req = do
-    let safeReq = req {checkStatus = \_ _ _ -> Nothing}
-    resp <- lift $ query safeReq
+    resp <- lift $ query req
     Just challenge <- return $ getChallenge resp
     let repeatReq = do
             cnonce <- liftIO $ randomCnonce
